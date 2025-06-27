@@ -19,7 +19,17 @@
     "get-balance": "ts-node src/get-account-balance.ts",
     "get-balance:dev": "ts-node --watch src/get-account-balance.ts",
     "mint-transfer": "ts-node src/mint-and-transfer.ts",
-    "mint-transfer:dev": "ts-node --watch src/mint-and-transfer.ts"
+    "mint-transfer:dev": "ts-node --watch src/mint-and-transfer.ts",
+    "create-collection-authorized": "ts-node src/create-collection-authorized.ts",
+    "create-collection-authorized:dev": "ts-node --watch src/create-collection-authorized.ts",
+    "mint-with-helper": "ts-node src/mint-with-helper.ts",
+    "mint-with-helper:dev": "ts-node --watch src/mint-with-helper.ts",
+    "mint-transfer-direct": "ts-node src/mint-and-transfer-direct.ts",
+    "mint-transfer-direct:dev": "ts-node --watch src/mint-and-transfer-direct.ts",
+    "mint-transfer-multisig": "ts-node src/mint-and-transfer-multisig.ts",
+    "mint-transfer-multisig:dev": "ts-node --watch src/mint-and-transfer-multisig.ts",
+    "mint-multisig": "ts-node src/mint-and-transfer-multisig.ts",
+    "mint-multisig:dev": "ts-node --watch src/mint-and-transfer-multisig.ts"
   },
   "dependencies": {
     "@aptos-labs/ts-sdk": "^3.0.0",

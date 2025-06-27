@@ -24,8 +24,33 @@ cp env.example .env
 ### Environment Variables
 
 - `NETWORK`: The Aptos network to use (MAINNET, TESTNET, DEVNET)
-- `MNEMONIC`: Your 12 or 24 word mnemonic phrase
+- `APTOS_ACCOUNT_PRIVATE_KEY`: Your Aptos account private key (hex format)
+- `APTOS_PAYER_ACCOUNT_PRIVATE_KEY`: Optional payer account private key (hex format)
 - `RPC_URL`: Optional custom RPC URL
+
+### Payer Account Configuration
+
+The SDK supports using a separate payer account for transactions:
+
+- **Creator Account** (`APTOS_ACCOUNT_PRIVATE_KEY`): The account that creates/authorizes the mint
+- **Payer Account** (`APTOS_PAYER_ACCOUNT_PRIVATE_KEY`): The account that pays for gas fees
+
+If `APTOS_PAYER_ACCOUNT_PRIVATE_KEY` is not configured, the creator account will also pay for gas fees.
+
+## Available Scripts
+
+### Basic Examples
+
+- `get-account-balance.ts` - Check account balance
+- `get-collection.ts` - Get collection information
+- `mint-and-transfer.ts` - Mint and transfer NFTs
+- `mint-with-helper.ts` - Mint using helper functions
+
+### Advanced Examples
+
+- `mint-and-transfer-direct.ts` - Direct mint and transfer with multi-account support
+- `mint-and-transfer-multisig.ts` - Multi-signature transactions
+- `mint-with-payer-account.ts` - **NEW**: Mint using separate payer account
 
 ## Development
 
@@ -64,6 +89,7 @@ The project uses a modern TypeScript configuration with:
 - Sending transactions
 - Querying blockchain state
 - Building dApps
+- **Separating creator and payer accounts for gas management**
 
 ## Running Scripts
 
@@ -76,4 +102,22 @@ NETWORK=MAINNET npm run start
 
 # Development mode with auto-reload
 npm run dev
+
+# Run specific examples
+npx ts-node src/mint-with-payer-account.ts
+npx ts-node src/mint-and-transfer-direct.ts
 ```
+
+## Payer Account Example
+
+The `mint-with-payer-account.ts` example demonstrates how to:
+
+1. Use a creator account to authorize NFT minting
+2. Use a separate payer account to cover gas fees
+3. Transfer the minted NFT to a recipient
+
+This is useful for scenarios where:
+
+- You want to separate concerns between content creation and transaction costs
+- You're building a platform where one account creates content and another pays for operations
+- You need to manage gas costs from a dedicated account
