@@ -17,7 +17,9 @@
     "get-collection": "ts-node src/get-collection.ts",
     "get-collection:dev": "ts-node --watch src/get-collection.ts",
     "get-balance": "ts-node src/get-account-balance.ts",
-    "get-balance:dev": "ts-node --watch src/get-account-balance.ts"
+    "get-balance:dev": "ts-node --watch src/get-account-balance.ts",
+    "mint-transfer": "ts-node src/mint-and-transfer.ts",
+    "mint-transfer:dev": "ts-node --watch src/mint-and-transfer.ts"
   },
   "dependencies": {
     "@aptos-labs/ts-sdk": "^3.0.0",
