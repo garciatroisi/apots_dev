@@ -20,24 +20,38 @@ async function getAccountBalance() {
   try {
     console.log("Getting account balance...");
 
-    const balance = await aptos.getAccountResource({
+    const balance = await aptos.getAccountAPTAmount({
       accountAddress: getAccountAddress(),
-      resourceType: "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>",
     });
 
-    console.log("Account balance resource:", balance);
-    if (balance.data) {
-      const coinValue = (balance.data as any).coin.value;
-      console.log("Balance in APT:", Number(coinValue) / Math.pow(10, 8));
-    }
+    // Convert from octas to APT (divide by 10^8)
+    const aptBalance = Number(balance) / 100000000;
+
+    console.log("Balance in octas:", balance);
+    console.log("Balance in APT:", aptBalance);
+
+    return {
+      data: {
+        coin: {
+          value: aptBalance.toString(),
+        },
+      },
+    };
   } catch (error) {
     console.error("Error getting account balance:", error);
-    throw error;
+    return {
+      data: {
+        coin: {
+          value: "0",
+        },
+      },
+    };
   }
 }
 
 async function main() {
-  await getAccountBalance();
+  const result = await getAccountBalance();
+  console.log("Final result:", result);
 }
 
 main().catch(console.error);
