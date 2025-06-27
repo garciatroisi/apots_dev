@@ -18,7 +18,7 @@ const network = Network[networkEnv as keyof typeof Network] || Network.TESTNET;
 const config = new AptosConfig({ network });
 const aptos = new Aptos(config);
 
-// Get private key from environment for main account
+// Get private key from environment for main account (creator)
 const privateKeyString = process.env.APTOS_ACCOUNT_PRIVATE_KEY || "";
 
 // Create main account from private key
@@ -35,8 +35,18 @@ if (payerPrivateKeyString.length > 0) {
   payerAccount = Account.fromPrivateKey({ privateKey: payerPrivateKey });
 }
 
+// Get user private key from environment
+const userPrivateKeyString = process.env.APTOS_USER_ACCOUNT_PRIVATE_KEY || "";
+
+// Create user account from private key (if provided)
+let userAccount: Account | null = null;
+if (userPrivateKeyString.length > 0) {
+  const userPrivateKey = new Ed25519PrivateKey(userPrivateKeyString);
+  userAccount = Account.fromPrivateKey({ privateKey: userPrivateKey });
+}
+
 // Export the configured instances
-export { aptos, account, network, payerAccount };
+export { aptos, account, network, payerAccount, userAccount };
 
 // Export a function to get account address
 export const getAccountAddress = () => account.accountAddress.toString();
@@ -45,6 +55,14 @@ export const getAccountAddress = () => account.accountAddress.toString();
 export const getPayerAccountAddress = () => {
   if (payerAccount) {
     return payerAccount.accountAddress.toString();
+  }
+  return null;
+};
+
+// Export a function to get user account address
+export const getUserAccountAddress = () => {
+  if (userAccount) {
+    return userAccount.accountAddress.toString();
   }
   return null;
 };
@@ -58,8 +76,20 @@ export const isAccountConfigured = () => privateKeyString.length > 0;
 // Export a function to check if payer account is configured
 export const isPayerAccountConfigured = () => payerPrivateKeyString.length > 0;
 
+// Export a function to check if user account is configured
+export const isUserAccountConfigured = () => userPrivateKeyString.length > 0;
+
 // Export a function to get the appropriate account for transactions
 // If payer account is configured, use it; otherwise use the main account
 export const getTransactionAccount = () => {
   return payerAccount || account;
+};
+
+// Export a function to get all configured accounts
+export const getAllAccounts = () => {
+  return {
+    creator: account,
+    payer: payerAccount,
+    user: userAccount,
+  };
 };

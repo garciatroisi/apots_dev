@@ -24,18 +24,21 @@ cp env.example .env
 ### Environment Variables
 
 - `NETWORK`: The Aptos network to use (MAINNET, TESTNET, DEVNET)
-- `APTOS_ACCOUNT_PRIVATE_KEY`: Your Aptos account private key (hex format)
+- `APTOS_ACCOUNT_PRIVATE_KEY`: Your Aptos account private key (hex format) - Creator account
 - `APTOS_PAYER_ACCOUNT_PRIVATE_KEY`: Optional payer account private key (hex format)
+- `APTOS_USER_ACCOUNT_PRIVATE_KEY`: Optional user account private key (hex format)
 - `RPC_URL`: Optional custom RPC URL
 
-### Payer Account Configuration
+### Account Configuration
 
-The SDK supports using a separate payer account for transactions:
+The SDK supports using multiple accounts for different purposes:
 
 - **Creator Account** (`APTOS_ACCOUNT_PRIVATE_KEY`): The account that creates/authorizes the mint
 - **Payer Account** (`APTOS_PAYER_ACCOUNT_PRIVATE_KEY`): The account that pays for gas fees
+- **User Account** (`APTOS_USER_ACCOUNT_PRIVATE_KEY`): Additional account for other operations
 
 If `APTOS_PAYER_ACCOUNT_PRIVATE_KEY` is not configured, the creator account will also pay for gas fees.
+If `APTOS_USER_ACCOUNT_PRIVATE_KEY` is not configured, only creator and payer accounts will be available.
 
 ## Available Scripts
 
@@ -48,9 +51,7 @@ If `APTOS_PAYER_ACCOUNT_PRIVATE_KEY` is not configured, the creator account will
 
 ### Advanced Examples
 
-- `mint-and-transfer-direct.ts` - Direct mint and transfer with multi-account support
-- `mint-and-transfer-multisig.ts` - Multi-signature transactions
-- `mint-with-payer-account.ts` - **NEW**: Mint using separate payer account
+- `mint-and-transfer-multisig.ts` - Multi-signature transactionss
 
 ## Development
 

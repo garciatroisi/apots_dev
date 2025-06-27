@@ -7,6 +7,8 @@ import {
   isPayerAccountConfigured,
   isAccountConfigured,
   getPayerAccountAddress,
+  //   userAccount,
+  isUserAccountConfigured,
 } from "./config/aptos-client";
 
 // Check if account is configured
@@ -24,6 +26,15 @@ if (!isPayerAccountConfigured()) {
     "This example requires a separate payer account to be configured."
   );
   console.log("Please set APTOS_PAYER_ACCOUNT_PRIVATE_KEY in your .env file");
+  process.exit(1);
+}
+
+// Check if user account is configured
+if (!isUserAccountConfigured()) {
+  console.error(
+    "Error: APTOS_USER_ACCOUNT_PRIVATE_KEY not configured in environment variables"
+  );
+  console.log("This example requires a user account to be configured.");
   process.exit(1);
 }
 
@@ -63,7 +74,7 @@ async function createMultiSigMintAndTransfer(
 
     const transaction = await aptos.transaction.build.multiAgent({
       sender: payerAccount.accountAddress, // payer is the sender
-      secondarySignerAddresses: [creatorAccount.accountAddress], // creator is secondary signer
+      secondarySignerAddresses: [account.accountAddress], // creator is secondary signer
       data: {
         function: `${getAccountAddress()}::moments_manager::mint_and_transfer_moment`,
         functionArguments: [
@@ -90,7 +101,7 @@ async function createMultiSigMintAndTransfer(
 
     console.log("Signing transaction with creator account...");
     const creatorSenderAuthenticator = aptos.transaction.sign({
-      signer: creatorAccount,
+      signer: account,
       transaction,
     });
 
