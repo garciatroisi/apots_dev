@@ -23,7 +23,9 @@
     "mint-transfer-direct": "ts-node src/mint-and-transfer-direct.ts",
     "mint-transfer-multisig": "ts-node src/mint-and-transfer-multisig.ts",
     "mint-multisig": "ts-node src/mint-and-transfer-multisig.ts",
-    "update-moment-uri": "ts-node src/update-moment-uri.ts"
+    "mint-multisig-two": "ts-node src/mint-and-transfer-multisig-two-users.ts",
+    "update-moment-uri": "ts-node src/update-moment-uri.ts",
+    "update-royalties": "ts-node src/update-royalties.ts"
   },
   "dependencies": {
     "@aptos-labs/ts-sdk": "^3.0.0",
