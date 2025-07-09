@@ -15,7 +15,14 @@ const networkEnv = process.env.NETWORK?.toUpperCase() || "TESTNET";
 const network = Network[networkEnv as keyof typeof Network] || Network.TESTNET;
 
 // Create Aptos client configuration
-const config = new AptosConfig({ network });
+const config = new AptosConfig({
+  network,
+  clientConfig: {
+    ...(process.env.APTOS_API_KEY
+      ? { API_KEY: process.env.APTOS_API_KEY }
+      : {}),
+  },
+});
 const aptos = new Aptos(config);
 
 // Get private key from environment for main account (creator)

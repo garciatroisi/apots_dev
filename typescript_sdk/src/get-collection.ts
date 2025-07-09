@@ -32,7 +32,7 @@ async function getCollection(collectionName: string) {
 }
 
 async function main() {
-  const collectionName = "UFCPACKS";
+  const collectionName = "UFCPACKS_BURNABLE";
   await getCollection(collectionName);
 }
 

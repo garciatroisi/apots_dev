@@ -11,7 +11,7 @@ script {
             1000000, 
             collection_name,
             string::utf8(b"https://example.com/collection_metadata.json"),
-            true, true, true, true, true, true, true, true, true,
+            true, true, true, true, true, true, true, false, false,
             5, 100 
         );
     }

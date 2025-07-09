@@ -40,6 +40,13 @@
   "exclude": ["node_modules", "dist", "build", "**/*.test.ts", "**/*.spec.ts"],
   "ts-node": {
     "esm": false,
-    "experimentalSpecifierResolution": "node"
+    "experimentalSpecifierResolution": "node",
+    "transpileOnly": false,
+    "files": true,
+    "compilerOptions": {
+      "sourceMap": true,
+      "inlineSourceMap": false,
+      "inlineSources": true
+    }
   }
 }

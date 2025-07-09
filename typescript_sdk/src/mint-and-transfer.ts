@@ -5,6 +5,7 @@ import {
   getAccountAddress,
   getNetworkName,
   isAccountConfigured,
+  getUserAccountAddress,
 } from "./config/aptos-client";
 
 // Check if account is configured
@@ -182,12 +183,11 @@ async function mintAndTransfer(
 }
 
 async function main() {
-  const collectionName = "UFCPACKS";
+  const collectionName = "UFCPACKS_BURNABLE";
   const description = "Token description";
   const tokenName = "My Token #1";
   const uri = "ipfs://your-uri-here";
-  const recipient =
-    "0x39f6714f6307d07aaf510f4a0edd87fe6ffd741d60429c9517efde6f9cd92d27"; // Replace with recipient address
+  const recipient = getUserAccountAddress() || "";
 
   try {
     const result = await mintAndTransfer(
