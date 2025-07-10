@@ -14,6 +14,8 @@ interface CollectionSupplyInfo {
     tokenId: string;
     tokenName: string;
     tokenUri: string | undefined;
+    digitalAssetData: any | null;
+    error?: string;
   }>;
 }
 
@@ -49,13 +51,51 @@ async function getCollectionSupply(
     // Calculate circulating supply
     const burnedTokens = burnAddressTokens.length;
     const circulatingSupply = totalSupply - burnedTokens;
+    // console.log({ burnAddressTokens });
+    // Get detailed info about burned tokens with complete data
+    const burnAddressTokensInfo = await Promise.all(
+      burnAddressTokens.map(async (token) => {
+        try {
+          // Get complete digital asset data
+          const digitalAssetData = await aptos.getDigitalAssetData({
+            digitalAssetAddress: token.token_data_id,
+          });
 
-    // Get detailed info about burned tokens
-    const burnAddressTokensInfo = burnAddressTokens.map((token) => ({
-      tokenId: token.token_data_id,
-      tokenName: token.current_token_data?.token_name || "Unknown",
-      tokenUri: token.current_token_data?.token_uri || undefined,
-    }));
+          return {
+            tokenId: token.token_data_id,
+            tokenName: token.current_token_data?.token_name || "Unknown",
+            tokenUri: token.current_token_data?.token_uri || undefined,
+            // Complete digital asset data - include all available properties
+            digitalAssetData: {
+              ...digitalAssetData,
+              // Additional computed properties for easier access
+              tokenStandard: digitalAssetData.token_standard,
+              tokenProperties: digitalAssetData.token_properties,
+              supply: digitalAssetData.supply,
+              maximum: digitalAssetData.maximum,
+              largestPropertyVersionV1:
+                digitalAssetData.largest_property_version_v1,
+              tokenUri: digitalAssetData.token_uri,
+              description: digitalAssetData.description,
+              tokenName: digitalAssetData.token_name,
+              collectionId: digitalAssetData.collection_id,
+            },
+          };
+        } catch (error) {
+          console.error(
+            `Error getting data for token ${token.token_data_id}:`,
+            error
+          );
+          return {
+            tokenId: token.token_data_id,
+            tokenName: token.current_token_data?.token_name || "Unknown",
+            tokenUri: token.current_token_data?.token_uri || undefined,
+            digitalAssetData: null,
+            error: error instanceof Error ? error.message : "Unknown error",
+          };
+        }
+      })
+    );
 
     const result: CollectionSupplyInfo = {
       collectionAddress: collectionData.collection_id,
@@ -100,36 +140,63 @@ async function displayCollectionSupplyInfo(info: CollectionSupplyInfo) {
       if (token.tokenUri) {
         console.log(`   URI: ${token.tokenUri}`);
       }
-      // query MyQuery {
-      //   token_activities_v2(
-      //     where: {
-      //       _and: [
-      //         { to_address: { _eq: "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" } },
-      //         { token_data_id: { _eq: "0x0fd9794fd23516cebe3800b98c8c4e58b68892d8c8ed10cd2b57329bff3adada" } }
-      //       ]
-      //     }
-      //   ) {
-      //     to_address
-      //     from_address
-      //     transaction_version
-      //   }
-      // }
-      const r = await aptos.getDigitalAssetActivity({
-        digitalAssetAddress: token.tokenId,
-      });
 
-      // Filter burn events
-      const burnEvents = r.filter(
-        (event) =>
-          event.to_address ===
-          "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
-      );
+      // Display complete digital asset data
+      if (token.digitalAssetData) {
+        console.log(`   📊 COMPLETE TOKEN DATA:`);
+        console.log(
+          `   Token Standard: ${token.digitalAssetData.token_standard}`
+        );
+        console.log(`   Supply: ${token.digitalAssetData.supply}`);
+        console.log(`   Maximum: ${token.digitalAssetData.maximum}`);
+        console.log(`   Description: ${token.digitalAssetData.description}`);
+        console.log(
+          `   Collection ID: ${token.digitalAssetData.collection_id}`
+        );
+        console.log(
+          `   Token Properties:`,
+          token.digitalAssetData.token_properties
+        );
 
-      burnEvents.forEach((event, _) => {
-        console.log(`  Burned by: ${event.from_address}`);
-        console.log(`  Timestamp: ${event.transaction_timestamp}`);
-        console.log(`  Transaction Version: ${event.transaction_version}`);
-      });
+        // Display all available properties
+        console.log(`   🔍 ALL AVAILABLE PROPERTIES:`);
+        Object.entries(token.digitalAssetData).forEach(([key, value]) => {
+          if (value !== null && value !== undefined) {
+            console.log(`   ${key}: ${JSON.stringify(value)}`);
+          }
+        });
+      } else if (token.error) {
+        console.log(`   ❌ Error getting token data: ${token.error}`);
+      }
+
+      // Get activity data
+      try {
+        const r = await aptos.getDigitalAssetActivity({
+          digitalAssetAddress: token.tokenId,
+        });
+
+        // Filter burn events
+        const burnEvents = r.filter(
+          (event) =>
+            event.to_address ===
+            "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        );
+
+        if (burnEvents.length > 0) {
+          console.log(`   🔥 BURN ACTIVITY:`);
+          burnEvents.forEach((event, _) => {
+            console.log(`     Burned by: ${event.from_address}`);
+            console.log(`     Timestamp: ${event.transaction_timestamp}`);
+            console.log(
+              `     Transaction Version: ${event.transaction_version}`
+            );
+          });
+        }
+      } catch (error) {
+        console.log(`   ❌ Error getting activity data: ${error}`);
+      }
+
+      console.log(""); // Empty line for separation
     }
   }
 
