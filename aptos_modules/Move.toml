@@ -4,7 +4,7 @@ version = "1.0.0"
 authors = []
 
 [addresses]
-ufc_packs = "0xd49449ebf80e6c4e9fe9753cfc52078a70c699a9c79135388636f1cbdc56b930"
+ufc_strike = "0xd49449ebf80e6c4e9fe9753cfc52078a70c699a9c79135388636f1cbdc56b930"
 std = "0x1"
 aptos_std = "0x1"
 aptos_framework = "0x1"

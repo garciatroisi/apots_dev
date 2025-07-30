@@ -1,4 +1,4 @@
-module ufc_packs::message {
+module ufc_strike::message {
     use std::error;
     use std::signer;
     use std::string;
@@ -64,12 +64,12 @@ module ufc_packs::message {
         // ================================= View MessageHolder Content ================================== //
         
         // Get the MessageHolder resource and print its content
-        let message_holder = borrow_global<MessageHolder>(addr);
-        debug::print(&string::utf8(b"=== MESSAGEHOLDER CONTENT ==="));
-        debug::print(&string::utf8(b"Account address:"));
-        debug::print(&addr);
-        debug::print(&string::utf8(b"Message content:"));
-        debug::print(&message_holder.message);
-        debug::print(&string::utf8(b"=================="));
+        // let message_holder = borrow_global<MessageHolder>(addr);
+        // debug::print(&string::utf8(b"=== MESSAGEHOLDER CONTENT ==="));
+        // debug::print(&string::utf8(b"Account address:"));
+        // debug::print(&addr);
+        // debug::print(&string::utf8(b"Message content:"));
+        // debug::print(&message_holder.message);
+        // debug::print(&string::utf8(b"=================="));
     }
 }

@@ -1,4 +1,4 @@
-module ufc_packs::moments_manager {
+module ufc_strike::moments_manager {
     use std::signer;
     use aptos_framework::object;
     use std::string::String;
