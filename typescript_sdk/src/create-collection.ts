@@ -105,14 +105,14 @@ async function createUFCPacksCollection(
 ): Promise<CreateCollectionResult> {
   console.log("🥊 Creating UFC Packs Collection...");
 
-  const collectionName = "UFCPACKS_BURNABLE";
+  const collectionName = "PADDY PIMBLETT | UFC FIGHT NIGHT SEP 4, 2021";
   const description =
-    "UFC Packs Collection - Official UFC digital collectibles and moments";
+    'Paddy "The Baddy" Pimblett earns a TKO victory landing a series of punches against Luigi Vendramini, in his UFC debut.';
   const uri =
-    "ipfs://bafkreih2cjeu5j4sufgp326iebcv4rj7iaj2dmtuf6cky4i2g5v3eee6ce";
+    "ipfs://bafkreigvefiuw2oebd3hjelygcfp4bosh3vkbkaaiecj4zqpz5kj7hrp7a";
 
   const options: CreateCollectionOptions = {
-    maxSupply: 10000, // Maximum 10,000 tokens in the collection
+    maxSupply: 23970, // Maximum 10,000 tokens in the collection
     mutableDescription: true,
     mutableRoyalty: true,
     mutableURI: true,

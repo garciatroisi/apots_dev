@@ -1,4 +1,4 @@
-import { AccountAddress } from "@aptos-labs/ts-sdk";
+// import { AccountAddress } from "@aptos-labs/ts-sdk";
 import {
   aptos,
   account,
@@ -23,15 +23,95 @@ interface MintResult {
   txHash: string;
 }
 
-interface TransferResult {
-  txHash: string;
-}
+// interface TransferResult {
+//   txHash: string;
+// }
+
+// interface PropertyResult {
+//   txHash: string;
+// }
+
+// async function addTokenProperty(
+//   digitalAssetAddress: string,
+//   propertyKey: string,
+//   propertyValue: string,
+//   propertyType:
+//     | "BOOLEAN"
+//     | "U8"
+//     | "U16"
+//     | "U32"
+//     | "U64"
+//     | "U128"
+//     | "U256"
+//     | "ADDRESS"
+//     | "STRING"
+//     | "ARRAY" = "STRING"
+// ): Promise<PropertyResult> {
+//   let committedTxn;
+//   try {
+//     console.log(
+//       `Adding property "${propertyKey}" with value "${propertyValue}" to token at address ${digitalAssetAddress}...`
+//     );
+
+//     const transaction = await aptos.addDigitalAssetPropertyTransaction({
+//       creator: account,
+//       digitalAssetAddress,
+//       propertyKey,
+//       propertyValue,
+//       propertyType,
+//     });
+
+//     committedTxn = await aptos.signAndSubmitTransaction({
+//       signer: account,
+//       transaction,
+//     });
+
+//     await aptos.waitForTransaction({
+//       transactionHash: committedTxn.hash,
+//     });
+
+//     console.log(
+//       `Token property "${propertyKey}" added successfully. Transaction hash: ${committedTxn.hash}`
+//     );
+
+//     return {
+//       txHash: committedTxn.hash,
+//     };
+//   } catch (error) {
+//     console.error(
+//       `Error adding token property: ${
+//         error instanceof Error ? error.message : String(error)
+//       }`
+//     );
+//     // If we have the transaction hash, include it in the error
+//     if (committedTxn?.hash && error instanceof Error) {
+//       (error as any).txHash = committedTxn.hash;
+//     }
+//     throw error;
+//   }
+// }
 
 async function mintNFT(
   collectionName: string,
   name: string,
   description: string,
-  uri: string
+  uri: string,
+  properties?: {
+    [key: string]: {
+      value: string;
+      type?:
+        | "BOOLEAN"
+        | "U8"
+        | "U16"
+        | "U32"
+        | "U64"
+        | "U128"
+        | "U256"
+        | "ADDRESS"
+        | "STRING"
+        | "ARRAY";
+    };
+  }
 ): Promise<MintResult> {
   let committedTxn;
   try {
@@ -43,6 +123,13 @@ async function mintNFT(
       description,
       name,
       uri,
+      propertyKeys: properties ? Object.keys(properties) : [],
+      propertyValues: properties
+        ? Object.values(properties).map((p) => p.value)
+        : [],
+      propertyTypes: properties
+        ? Object.values(properties).map((p) => p.type || "STRING")
+        : [],
     });
 
     committedTxn = await aptos.signAndSubmitTransaction({
@@ -95,76 +182,94 @@ async function mintNFT(
   }
 }
 
-async function transferNFT(
-  tokenId: string,
-  toAddress: string
-): Promise<TransferResult> {
-  let committedTxn;
-  try {
-    console.log(`Transferring NFT ${tokenId} to ${toAddress}`);
+// async function transferNFT(
+//   tokenId: string,
+//   toAddress: string
+// ): Promise<TransferResult> {
+//   let committedTxn;
+//   try {
+//     console.log(`Transferring NFT ${tokenId} to ${toAddress}`);
 
-    const transaction = await aptos.transferDigitalAssetTransaction({
-      sender: account,
-      digitalAssetAddress: tokenId,
-      recipient: AccountAddress.from(toAddress),
-    });
+//     const transaction = await aptos.transferDigitalAssetTransaction({
+//       sender: account,
+//       digitalAssetAddress: tokenId,
+//       recipient: AccountAddress.from(toAddress),
+//     });
 
-    committedTxn = await aptos.signAndSubmitTransaction({
-      signer: account,
-      transaction,
-    });
+//     committedTxn = await aptos.signAndSubmitTransaction({
+//       signer: account,
+//       transaction,
+//     });
 
-    console.log("Transfer transaction hash:", committedTxn.hash);
+//     console.log("Transfer transaction hash:", committedTxn.hash);
 
-    await aptos.waitForTransaction({
-      transactionHash: committedTxn.hash,
-    });
+//     await aptos.waitForTransaction({
+//       transactionHash: committedTxn.hash,
+//     });
 
-    console.log(
-      `NFT transferred successfully. Transaction hash: ${committedTxn.hash}`
-    );
+//     console.log(
+//       `NFT transferred successfully. Transaction hash: ${committedTxn.hash}`
+//     );
 
-    return {
-      txHash: committedTxn.hash,
-    };
-  } catch (error) {
-    console.error(
-      `Error transferring NFT: ${
-        error instanceof Error ? error.message : String(error)
-      }`
-    );
-    // If we have the transaction hash, include it in the error
-    if (committedTxn?.hash && error instanceof Error) {
-      (error as any).txHash = committedTxn.hash;
-    }
-    throw error;
-  }
-}
+//     return {
+//       txHash: committedTxn.hash,
+//     };
+//   } catch (error) {
+//     console.error(
+//       `Error transferring NFT: ${
+//         error instanceof Error ? error.message : String(error)
+//       }`
+//     );
+//     // If we have the transaction hash, include it in the error
+//     if (committedTxn?.hash && error instanceof Error) {
+//       (error as any).txHash = committedTxn.hash;
+//     }
+//     throw error;
+//   }
+// }
 
 async function mintAndTransfer(
   collectionName: string,
   tokenName: string,
   description: string,
   uri: string,
-  recipient: string
+  recipient: string,
+  properties?: {
+    [key: string]: {
+      value: string;
+      type?:
+        | "BOOLEAN"
+        | "U8"
+        | "U16"
+        | "U32"
+        | "U64"
+        | "U128"
+        | "U256"
+        | "ADDRESS"
+        | "STRING"
+        | "ARRAY";
+    };
+  }
 ) {
   try {
     console.log("Starting mint and transfer process...");
 
-    // Step 1: Mint the NFT
-    console.log("Step 1: Minting NFT...");
+    // Step 1: Mint the NFT with properties
+    console.log("Step 1: Minting NFT with properties...");
     const mintResult = await mintNFT(
       collectionName,
       tokenName,
       description,
-      uri
+      uri,
+      properties
     );
 
     console.log("Mint completed:", mintResult);
 
     // Step 2: Transfer the NFT
     console.log("Step 2: Transferring NFT...");
-    const transferResult = await transferNFT(mintResult.tokenId, recipient);
+    // const transferResult = await transferNFT(mintResult.tokenId, recipient);
+    const transferResult = "no transfered";
 
     console.log("Transfer completed:", transferResult);
 
@@ -183,12 +288,21 @@ async function mintAndTransfer(
 }
 
 async function main() {
-  const collectionName = "UFCPACKS_BURNABLE";
-  const description = "Token description";
-  const tokenName = "My Token #4";
-  const uri = "ipfs://your-uri-here";
+  // const collectionName = "UFCPACKS_BURNABLE";
+  const collectionName = "TJ DILLASHAW | UFC FIGHT NIGHT JULY 11, 2012";
+  const description =
+    "Former bantamweight champion, TJ Dillashaw finishes Vaughan Lee via rear naked choke from standing body triangle on his way up the 135lb ranks. This is one of the first fights that Dillashaw mixed his tactical, stance switching kickboxing style with his NCAA wrestling pedigree.";
+  const uri =
+    "ipfs://bafkreiasv4ztzl3lrhuw7npf5fmgo3i4bu7thjnt6tzkwznlscldsj54uq";
+  const tokenName = "TJ DILLASHAW | UFC FIGHT NIGHT JULY 11, 2012 | #581";
+
   const recipient =
-    "0xa96090de3a2f96623df8d6a36e09dd87dff98b0e522b5f4d3e41a139294d34de"; //getUserAccountAddress() || "";
+    "0xd49449ebf80e6c4e9fe9753cfc52078a70c699a9c79135388636f1cbdc56b930"; //getUserAccountAddress() || "";
+
+  // Define onchain properties to add
+  // const properties = {
+  //   "Serial Number": { value: "581", type: "U32" as const },
+  // };
 
   try {
     const result = await mintAndTransfer(
@@ -197,6 +311,7 @@ async function main() {
       description,
       uri,
       recipient
+      // properties
     );
     console.log("Final result:", result);
   } catch (error) {
