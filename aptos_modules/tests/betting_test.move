@@ -10,12 +10,11 @@ module ufc_strike::betting_test {
     use aptos_framework::timestamp;
     use ufc_strike::betting;
 
-    /// Test token para pruebas
     #[test_only]
     #[resource_group_member(group = aptos_framework::object::ObjectGroup)]
     struct TestToken has key {}
 
-    /// Función helper para crear test token
+    // Helper function to create test token
     #[test_only]
     public fun create_test_token(creator: &signer): (ConstructorRef, Object<TestToken>) {
         account::create_account_for_test(signer::address_of(creator));
@@ -27,15 +26,29 @@ module ufc_strike::betting_test {
         (creator_ref, token)
     }
 
-    /// Función helper para inicializar metadata
+    // Helper function to initialize metadata
     #[test_only]
     public fun init_test_metadata(constructor_ref: &ConstructorRef): (MintRef, TransferRef, BurnRef, MutateMetadataRef) {
-        let (mint_ref, transfer_ref, burn_ref) = primary_fungible_store::init_test_metadata_with_primary_store_enabled(constructor_ref);
+        // Create fungible asset with primary store enabled and unlimited supply (None)
+        primary_fungible_store::create_primary_store_enabled_fungible_asset(
+            constructor_ref,
+            option::none(),
+            string::utf8(b"Test Token"),
+            string::utf8(b"TST"),
+            8,
+            string::utf8(b"http://example.com/icon.png"),
+            string::utf8(b"http://example.com")
+        );
+
+        // Generate refs
+        let mint_ref = fungible_asset::generate_mint_ref(constructor_ref);
+        let transfer_ref = fungible_asset::generate_transfer_ref(constructor_ref);
+        let burn_ref = fungible_asset::generate_burn_ref(constructor_ref);
         let mutate_metadata_ref = fungible_asset::generate_mutate_metadata_ref(constructor_ref);
         (mint_ref, transfer_ref, burn_ref, mutate_metadata_ref)
     }
 
-    /// Función helper para crear fungible asset
+    // Helper function to create fungible asset
     #[test_only]
     public fun create_fungible_asset(
         creator: &signer
@@ -45,7 +58,7 @@ module ufc_strike::betting_test {
         (mint, transfer, burn, mutate_metadata, object::convert(token_object))
     }
 
-    /// Función helper para crear test store
+    // Helper function to create test store
     #[test_only]
     public fun create_test_store<T: key>(owner: &signer, metadata: Object<T>): Object<FungibleStore> {
         let owner_addr = signer::address_of(owner);
@@ -55,7 +68,6 @@ module ufc_strike::betting_test {
         fungible_asset::create_store(&object::create_object_from_account(owner), metadata)
     }
 
-    /// Test básico para crear store
     #[test(creator = @ufc_strike)]
     fun test_store_creation(creator: &signer) {
         let (_, _, _, _, metadata) = create_fungible_asset(creator);
@@ -66,20 +78,17 @@ module ufc_strike::betting_test {
         assert!(balance == 0, 1);
     }
 
-    /// Test simple para verificar que el módulo funciona
     #[test(creator = @ufc_strike)]
     fun test_basic_functionality(creator: &signer) {
         let (_, _, _, _, metadata) = create_fungible_asset(creator);
         
-        // Crear store
+        // Create store
         betting::new_store(creator, metadata);
         
-        // Verificar balance inicial
+        // Verify initial balance
         let balance = betting::get_balance();
         assert!(balance == 0, 2);
     }
-
-    /// Test para verificar funcionalidad de deposit
     #[test(creator = @ufc_strike, user = @0x123)]
     fun test_deposit_from_store_functionality(creator: &signer, user: &signer) {
 
@@ -92,31 +101,31 @@ module ufc_strike::betting_test {
         let balance = betting::get_balance();
         assert!(balance == 0, 3);
         
-        // Crear store personalizado para el usuario
+        // Create custom store for the user
         let user_store = create_test_store(user, metadata);
         
-        // Verificar supply inicial
+        // Verify initial supply
         assert!(supply(metadata) == option::some(0), 1);
  
-        // Mint tokens al store personalizado del usuario
-        let fa = fungible_asset::mint(&mint_ref, 100);
-        assert!(supply(metadata) == option::some(100), 2);
+        // Mint tokens to user's custom store - 1 million tokens
+        let fa = fungible_asset::mint(&mint_ref, 1000000);
+        assert!(supply(metadata) == option::some(1000000), 2);
         fungible_asset::deposit(user_store, fa);
         
-        // Verificar que el usuario tiene tokens en su store personalizado
+        // Verify that the user has tokens in their custom store
         let user_balance = fungible_asset::balance(user_store);
-        assert!(user_balance == 100, 5);
+        assert!(user_balance == 1000000, 5);
         
-        // Hacer deposit desde el store personalizado al módulo betting
-        betting::deposit_from_store(user, user_store, 50);
+        // Make deposit from custom store to betting module - 500k tokens
+        betting::deposit_from_store(user, user_store, 500000);
         
-        // Verificar balance después del deposit
+        // Verify balance after deposit
         let balance_after = betting::get_balance();
-        assert!(balance_after == 50, 6);
+        assert!(balance_after == 500000, 6);
         
-        // Verificar que el usuario tiene menos tokens
+        // Verify that the user has fewer tokens
         let user_balance_after = fungible_asset::balance(user_store);
-        assert!(user_balance_after == 50, 7);
+        assert!(user_balance_after == 500000, 7);
         
     }
 
@@ -133,27 +142,27 @@ module ufc_strike::betting_test {
         assert!(balance == 0, 3);
         
         
-        // Verificar supply inicial
+        // Verify initial supply
         assert!(supply(metadata) == option::some(0), 1);
  
-        // Mint tokens al store personalizado del usuario
-        let fa = fungible_asset::mint(&mint_ref, 100);
-        assert!(supply(metadata) == option::some(100), 2);
+        // Mint tokens to user's custom store - 1 million tokens
+        let fa = fungible_asset::mint(&mint_ref, 1000000);
+        assert!(supply(metadata) == option::some(1000000), 2);
 
         let user_address = signer::address_of(user);
         primary_fungible_store::deposit(user_address, fa);
         
-        // Verificar que el usuario tiene tokens en su store personalizado
-        assert!(primary_fungible_store::balance(user_address, metadata) == 100, 3);
-        // Hacer deposit desde el store personalizado al módulo betting
-        betting::deposit(user, metadata, 40);
+        // Verify that the user has tokens in their custom store
+        assert!(primary_fungible_store::balance(user_address, metadata) == 1000000, 3);
+        // Make deposit from custom store to betting module - 400k tokens
+        betting::deposit(user, metadata, 400000);
         
-        // Verificar balance después del deposit
+        // Verify balance after deposit
         let balance_after = betting::get_balance();
-        assert!(balance_after == 40, 6);
+        assert!(balance_after == 400000, 6);
         
-        // Verificar que el usuario tiene menos tokens
-        assert!(primary_fungible_store::balance(user_address, metadata) == 60, 7);
+        // Verify that the user has fewer tokens
+        assert!(primary_fungible_store::balance(user_address, metadata) == 600000, 7);
         
     }
 } 

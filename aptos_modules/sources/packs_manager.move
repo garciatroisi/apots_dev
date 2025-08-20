@@ -80,7 +80,7 @@ module ufc_strike::packs_manager {
         randomness: u64,
         _pack_id: address
     ) acquires PacksDrop {
-        let user_addr = signer::address_of(user);
+        let _user_addr = signer::address_of(user);
 
         // 1. Ensure the user owns the pack NFT
         // Note: In a real implementation, you would verify ownership here

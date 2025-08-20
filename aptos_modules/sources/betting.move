@@ -1,36 +1,34 @@
 module ufc_strike::betting {
 
-    use aptos_framework::fungible_asset::{Self, balance, Metadata, FungibleAsset, FungibleStore};
+    use aptos_framework::fungible_asset::{Self, balance, Metadata, FungibleStore};
     use aptos_framework::object::{Self, Object, ExtendRef};
-    use aptos_framework::signer;
     use aptos_framework::primary_fungible_store;
-
-    /// Secondary store por usuario (una sola por usuario)
+ 
     struct SecondaryStore has key {
         store: Object<FungibleStore>,
         extend_ref: ExtendRef,
     }
 
-    /// Crear un secondary store para el usuario
+    /// Create a secondary store for the user
     public entry fun new_store(
         creator: &signer,
         metadata: Object<Metadata>
     ) {
-        // Crear objeto directamente desde la cuenta
+        // Create object directly from account
         let creator_ref = object::create_object_from_account(creator);
-        // Obtener extend_ref del store
+        // Get extend_ref from store
         let extend_ref = object::generate_extend_ref(&creator_ref);
-        // Crear store secundario
+        // Create secondary store
         let store = fungible_asset::create_store(&creator_ref, metadata);
 
-        // Guardar
+        // Save
         move_to(creator, SecondaryStore {
             store,
             extend_ref,
         });
     }
 
-    /// Depositar tokens en el store del módulo
+    /// Deposit tokens to the module's store
     public entry fun deposit(
         sender: &signer,
         metadata: Object<Metadata>,
@@ -41,7 +39,7 @@ module ufc_strike::betting {
         fungible_asset::deposit(store_data.store, fa);
     }
 
-    /// Depositar tokens desde un store personalizado al store del módulo
+    /// Deposit tokens from a custom store to the module's store
     public entry fun deposit_from_store(
         sender: &signer,
         sender_store: Object<FungibleStore>,
@@ -52,11 +50,11 @@ module ufc_strike::betting {
         fungible_asset::deposit(store_data.store, fa);
     }
 
-    /// Retirar tokens del store del módulo
+    /// Withdraw tokens from the module's store
     public entry fun withdraw(
-        admin: &signer,
+        _admin: &signer,
         recipient: address,
-        metadata: Object<Metadata>,
+        _metadata: Object<Metadata>,
         amount: u64
     ) acquires SecondaryStore {
         let store_data = borrow_global_mut<SecondaryStore>(@ufc_strike);
@@ -65,7 +63,7 @@ module ufc_strike::betting {
         primary_fungible_store::deposit(recipient, fa);
     }
 
-    /// Obtener balance del store del módulo
+    /// Get balance of the module's store
     public fun get_balance(): u64 acquires SecondaryStore {
         let store_data = borrow_global<SecondaryStore>(@ufc_strike);
         balance(store_data.store)

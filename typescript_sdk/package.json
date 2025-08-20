@@ -34,7 +34,14 @@
     "get-nfts-for-listing": "ts-node src/get-nfts-for-listing.ts",
     "complete-rarible-listing": "ts-node src/complete-rarible-listing.ts",
     "rename-collection": "ts-node src/rename-collection.ts",
-    "update-collection-metadata": "ts-node src/update-collection-metadata.ts"
+    "update-collection-metadata": "ts-node src/update-collection-metadata.ts",
+    "get-user-collection-tokens": "ts-node src/get-user-collection-tokens.ts",
+    "bulk-analysis": "ts-node src/bulk-collection-assets.ts",
+    "generate-collections": "ts-node src/generate-collections.ts",
+    "collections-loader": "ts-node src/collections-loader.ts",
+    "wallet-assets": "ts-node --transpileOnly src/get-wallet-assets.ts",
+    "wallet-assets-cli": "ts-node --transpileOnly src/get-wallet-assets-cli.ts",
+    "wallet-assets-metadata": "ts-node --transpileOnly src/get-wallet-assets-with-metadata.ts"
   },
   "dependencies": {
     "@aptos-labs/ts-sdk": "^3.1.2",
