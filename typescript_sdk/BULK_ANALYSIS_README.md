@@ -1,231 +1,231 @@
 # Bulk Collection Analysis
 
-Este conjunto de scripts te permite analizar eficientemente múltiples colecciones (hasta 700+) para obtener detalles de todos los assets de una dirección específica.
+This set of scripts allows you to efficiently analyze multiple collections (up to 700+) to obtain details of all assets from a specific address.
 
-## 🚀 Características Principales
+## 🚀 Main Features
 
-- **Procesamiento en lotes**: Procesa colecciones en grupos de 50 para optimizar rendimiento
-- **Control de concurrencia**: Limita las peticiones concurrentes para evitar sobrecarga
-- **Rate limiting**: Evita ser bloqueado por demasiadas peticiones
-- **Manejo de errores**: Continúa procesando aunque algunas colecciones fallen
-- **Progreso en tiempo real**: Muestra el progreso del análisis
-- **Resultados detallados**: Información completa de cada asset encontrado
+- **Batch processing**: Processes collections in groups of 50 to optimize performance
+- **Concurrency control**: Limits concurrent requests to avoid overload
+- **Rate limiting**: Avoids being blocked by too many requests
+- **Error handling**: Continues processing even if some collections fail
+- **Real-time progress**: Shows analysis progress
+- **Detailed results**: Complete information of each asset found
 
-## 📁 Archivos
+## 📁 Files
 
-- `bulk-collection-assets.ts` - Script principal de análisis masivo
-- `collections-loader.ts` - Utilidades para cargar colecciones desde archivos
-- `generate-collections.ts` - Generador de colecciones de ejemplo
-- `get-wallet-assets.ts` - Análisis de todos los assets de una wallet
-- `get-wallet-assets-cli.ts` - Versión CLI del análisis de wallet
+- `bulk-collection-assets.ts` - Main bulk analysis script
+- `collections-loader.ts` - Utilities for loading collections from files
+- `generate-collections.ts` - Example collections generator
+- `get-wallet-assets.ts` - Analysis of all assets in a wallet
+- `get-wallet-assets-cli.ts` - CLI version of wallet analysis
 
-## 🛠️ Configuración
+## 🛠️ Configuration
 
-### 1. Configurar la dirección del usuario
+### 1. Configure user address
 
-Edita `bulk-collection-assets.ts` y cambia la variable `USER_ADDRESS`:
-
-```typescript
-const USER_ADDRESS = "0xTU_DIRECCION_AQUI";
-```
-
-### 2. Configurar parámetros de rendimiento
-
-Puedes ajustar estos valores según tus necesidades:
+Edit `bulk-collection-assets.ts` and change the `USER_ADDRESS` variable:
 
 ```typescript
-const BATCH_SIZE = 50; // Colecciones por lote
-const TOKEN_BATCH_SIZE = 100; // Tokens por petición
-const MAX_CONCURRENT_REQUESTS = 10; // Peticiones concurrentes máximas
+const USER_ADDRESS = "0xYOUR_ADDRESS_HERE";
 ```
 
-## 📋 Uso
+### 2. Configure performance parameters
 
-### Opción 1: Usar colecciones de ejemplo
+You can adjust these values according to your needs:
+
+```typescript
+const BATCH_SIZE = 50; // Collections per batch
+const TOKEN_BATCH_SIZE = 100; // Tokens per request
+const MAX_CONCURRENT_REQUESTS = 10; // Maximum concurrent requests
+```
+
+## 📋 Usage
+
+### Option 1: Use example collections
 
 ```bash
-# Generar 700 colecciones de ejemplo
+# Generate 700 example collections
 npm run generate-collections
 
-# Ejecutar análisis masivo
+# Run bulk analysis
 npm run bulk-analysis
 ```
 
-### Opción 2: Usar tus propias colecciones
+### Option 2: Use your own collections
 
-1. Crea un archivo `collections.json` con el formato:
+1. Create a `collections.json` file with the format:
 
 ```json
 [
   {
     "address": "0x1234567890abcdef...",
-    "name": "Mi Colección 1"
+    "name": "My Collection 1"
   },
   {
     "address": "0xabcdef1234567890...",
-    "name": "Mi Colección 2"
+    "name": "My Collection 2"
   }
 ]
 ```
 
-2. Ejecuta el análisis:
+2. Run the analysis:
 
 ```bash
 npm run bulk-analysis
 ```
 
-### Opción 3: Usar el cargador de colecciones directamente
+### Option 3: Use the collections loader directly
 
 ```bash
 npm run collections-loader
 ```
 
-### Opción 4: Analizar todos los assets de una wallet
+### Option 4: Analyze all assets in a wallet
 
 ```bash
-# Usar dirección hardcodeada
+# Use hardcoded address
 npm run wallet-assets
 
-# Especificar dirección como parámetro
-npm run wallet-assets-cli 0xTU_DIRECCION_AQUI
+# Specify address as parameter
+npm run wallet-assets-cli 0xYOUR_ADDRESS_HERE
 ```
 
-## 📊 Resultados
+## 📊 Results
 
-### Para Análisis de Colecciones Específicas
+### For Specific Collection Analysis
 
-El script mostrará:
+The script will show:
 
-1. **Resumen general**:
+1. **General summary**:
 
-   - Total de colecciones procesadas
-   - Total de assets encontrados
-   - Colecciones con errores
+   - Total collections processed
+   - Total assets found
+   - Collections with errors
 
-2. **Resumen por colección**:
+2. **Summary by collection**:
 
-   - Estado de cada colección (✅ con assets, ⚠️ sin assets, ❌ con errores)
-   - Número de assets por colección
+   - Status of each collection (✅ with assets, ⚠️ without assets, ❌ with errors)
+   - Number of assets per collection
 
-3. **Detalles de assets**:
-   - Nombre del token
+3. **Asset details**:
+   - Token name
    - Token ID
-   - URI del token
-   - Propiedades del token
-   - Información del digital asset
+   - Token URI
+   - Token properties
+   - Digital asset information
 
-### Para Análisis de Wallet Completa
+### For Complete Wallet Analysis
 
-El script mostrará:
+The script will show:
 
-1. **Resumen general**:
+1. **General summary**:
 
-   - Total de assets en la wallet
-   - Total de colecciones únicas
-   - Tiempo de análisis
+   - Total assets in wallet
+   - Total unique collections
+   - Analysis time
 
-2. **Resumen por colección**:
+2. **Summary by collection**:
 
-   - Colecciones ordenadas por cantidad de assets
-   - Número de assets por colección
+   - Collections sorted by asset count
+   - Number of assets per collection
 
-3. **Detalles de assets**:
-   - Nombre del token
-   - Colección a la que pertenece
-   - Token ID y cantidad
-   - URI del token
-   - Propiedades detalladas (si están habilitadas)
+3. **Asset details**:
+   - Token name
+   - Collection it belongs to
+   - Token ID and amount
+   - Token URI
+   - Detailed properties (if enabled)
 
-## ⚡ Optimizaciones de Rendimiento
+## ⚡ Performance Optimizations
 
 ### Rate Limiting
 
-- Controla automáticamente el número de peticiones concurrentes
-- Evita sobrecargar la API de Aptos
+- Automatically controls the number of concurrent requests
+- Avoids overloading the Aptos API
 
-### Procesamiento en Lotes
+### Batch Processing
 
-- Procesa colecciones en grupos de 50
-- Muestra progreso en tiempo real
-- Permite interrumpir y reanudar fácilmente
+- Processes collections in groups of 50
+- Shows real-time progress
+- Allows easy interruption and resumption
 
-### Paginación Eficiente
+### Efficient Pagination
 
-- Obtiene tokens en lotes de 100
-- Maneja automáticamente la paginación completa
+- Gets tokens in batches of 100
+- Automatically handles complete pagination
 
-## 🔧 Personalización
+## 🔧 Customization
 
-### Cambiar el archivo de colecciones
+### Change collections file
 
-Edita `bulk-collection-assets.ts`:
+Edit `bulk-collection-assets.ts`:
 
 ```typescript
-const COLLECTIONS_FILE = "./tu-archivo-collections.json";
+const COLLECTIONS_FILE = "./your-collections-file.json";
 ```
 
-### Modificar el formato de salida
+### Modify output format
 
-Puedes descomentar estas líneas en `main()` para guardar resultados:
+You can uncomment these lines in `main()` to save results:
 
 ```typescript
 // await fs.writeFile('./analysis-results.json', JSON.stringify(results, null, 2));
 ```
 
-### Ajustar parámetros de rendimiento
+### Adjust performance parameters
 
-Para conexiones más lentas, reduce la concurrencia:
+For slower connections, reduce concurrency:
 
 ```typescript
-const MAX_CONCURRENT_REQUESTS = 5; // Menos peticiones concurrentes
-const BATCH_SIZE = 25; // Lotes más pequeños
+const MAX_CONCURRENT_REQUESTS = 5; // Fewer concurrent requests
+const BATCH_SIZE = 25; // Smaller batches
 ```
 
-### Configurar análisis de wallet
+### Configure wallet analysis
 
-En `get-wallet-assets.ts` puedes ajustar:
+In `get-wallet-assets.ts` you can adjust:
 
 ```typescript
 const SHOW_DETAILED_INFO = true; // Set to false for faster execution
-const BATCH_SIZE = 100; // Tokens por petición
-const MAX_CONCURRENT_REQUESTS = 10; // Peticiones concurrentes
+const BATCH_SIZE = 100; // Tokens per request
+const MAX_CONCURRENT_REQUESTS = 10; // Concurrent requests
 ```
 
-## 🐛 Solución de Problemas
+## 🐛 Troubleshooting
 
-### Error de rate limiting
+### Rate limiting error
 
 - Reduce `MAX_CONCURRENT_REQUESTS`
-- Aumenta el tiempo entre peticiones
+- Increase time between requests
 
-### Memoria insuficiente
+### Insufficient memory
 
 - Reduce `BATCH_SIZE`
-- Procesa menos colecciones por vez
+- Process fewer collections at a time
 
 ### Timeouts
 
-- Verifica tu conexión a internet
-- Considera usar un servidor más cercano
+- Check your internet connection
+- Consider using a closer server
 
-## 📈 Monitoreo
+## 📈 Monitoring
 
-El script muestra:
+The script shows:
 
-- Progreso en tiempo real
-- Tiempo transcurrido
-- Colecciones procesadas
-- Errores encontrados
+- Real-time progress
+- Elapsed time
+- Processed collections
+- Errors found
 
-## 🔄 Reanudar Procesamiento
+## 🔄 Resume Processing
 
-Si necesitas interrumpir y reanudar:
+If you need to interrupt and resume:
 
-1. Guarda los resultados parciales
-2. Modifica la lista de colecciones para excluir las ya procesadas
-3. Ejecuta nuevamente el script
+1. Save partial results
+2. Modify the collections list to exclude already processed ones
+3. Run the script again
 
-## 📝 Ejemplo de Salida
+## 📝 Example Output
 
 ```
 🚀 Starting bulk collection analysis...

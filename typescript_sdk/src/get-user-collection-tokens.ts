@@ -2,12 +2,12 @@ import { aptos, getNetworkName } from "./config/aptos-client";
 
 // Hardcoded user address - replace with the address you want to check
 const USER_ADDRESS =
-  "0xf0c680055d459b5f260672e03e0482077d1f61daa664d6369b0a00b368b309f3";
+  "0xd850dac2df4c1e96037d715d5bbc26f5a6b45838a1f79b504faf764f39c54bf6";
 
 // Collection information
 const COLLECTION_ADDRESS =
-  "0x0c0736c88587d39cc4901fb3813a094d2f6b010d8b791c868055e10eeb025eee";
-const COLLECTION_NAME = "MINGYANG ZHANG | UFC FIGHT NIGHT NOV 23, 2024";
+  "0x0a24dddff64d40d317ea3726ec67c29ef07f45427cd8757d7e706790bb9e6ae0";
+const COLLECTION_NAME = "NATALIA CRISTINA DA SILVA | UFC FIGHT NIGHT NOV 19, 2022";
 
 interface UserTokenInfo {
   tokenId: string;
@@ -193,6 +193,45 @@ async function displayUserCollectionTokens(
   console.log("=".repeat(70));
 }
 
+async function displaySerialNumbersOnly(tokens: UserTokenInfo[]) {
+  console.log("\n" + "=".repeat(70));
+  console.log("🔢 SERIAL NUMBERS LIST");
+  console.log("=".repeat(70));
+  console.log(`📊 Total Tokens: ${tokens.length}`);
+
+  if (tokens.length === 0) {
+    console.log("\n❌ No tokens found in this collection for this user");
+  } else {
+    console.log("\n🎯 SERIAL NUMBERS:");
+    console.log("-".repeat(50));
+
+    const serialNumbers: string[] = [];
+
+    for (const token of tokens) {
+      if (token.digitalAssetData?.token_properties) {
+        const serialNumber = token.digitalAssetData.token_properties["Serial Number"];
+        if (serialNumber) {
+          serialNumbers.push(serialNumber);
+        }
+      }
+    }
+
+    // Sort serial numbers numerically
+    serialNumbers.sort((a, b) => parseInt(a) - parseInt(b));
+
+    // Display sorted serial numbers
+    serialNumbers.forEach(serialNumber => {
+      console.log(`   ${serialNumber}`);
+    });
+
+    console.log("\n📋 SUMMARY:");
+    console.log(`   Total Serial Numbers: ${serialNumbers.length}`);
+    console.log(`   Serial Numbers (sorted): [${serialNumbers.join(", ")}]`);
+  }
+
+  console.log("=".repeat(70));
+}
+
 async function main() {
   console.log("🚀 Starting user collection tokens analysis...");
   console.log(`🌐 Network: ${getNetworkName()}`);
@@ -206,11 +245,15 @@ async function main() {
       COLLECTION_ADDRESS
     );
 
+    // Display full report
     await displayUserCollectionTokens(
       USER_ADDRESS,
       COLLECTION_NAME,
       userTokens
     );
+
+    // Display serial numbers only
+    await displaySerialNumbersOnly(userTokens);
 
     console.log("🎉 Analysis completed successfully!");
   } catch (error) {

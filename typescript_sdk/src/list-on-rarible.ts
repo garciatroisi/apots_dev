@@ -3,18 +3,18 @@ import dotenv from "dotenv";
 // Load environment variables
 dotenv.config();
 
-// Nueva interfaz para el formato correcto de la orden en Rarible
+// New interface for the correct order format in Rarible
 interface RaribleOrder {
   blockchain: string;
   data: {
     "@type": string;
-    // Puedes agregar más campos si la doc lo requiere
+    // You can add more fields if the documentation requires it
   };
   make: {
     assetType: {
       blockchain: string;
       "@type": string;
-      // Puedes agregar contract/tokenId si es necesario para NFTs
+      // You can add contract/tokenId if necessary for NFTs
     };
     value: number;
   };
@@ -22,11 +22,11 @@ interface RaribleOrder {
     assetType: {
       blockchain: string;
       "@type": string;
-      // Puedes agregar contract/tokenId si es necesario
+      // You can add contract/tokenId if necessary
     };
     value: number;
   };
-  // Puedes agregar más campos si la doc lo requiere
+  // You can add more fields if the documentation requires it
 }
 
 interface AptosNFTMetadata {
@@ -48,23 +48,23 @@ interface AptosNFTMetadata {
 const RARIBLE_API_BASE_URL = "https://testnet-api.rarible.org/v0.1";
 const RARIBLE_API_KEY = process.env.RARIBLE_API_KEY || "";
 
-// Función para crear la orden siguiendo el formato correcto
+// Function to create the order following the correct format
 async function createListingOrder(
   price: number,
   quantity: number = 1
 ): Promise<RaribleOrder> {
-  // NOTA: Ajusta el @type de data según la doc de Rarible para Aptos
-  // Si no existe uno específico para Aptos, usa el que corresponda
+  // NOTE: Adjust the @type of data according to Rarible documentation for Aptos
+  // If there's no specific one for Aptos, use the corresponding one
   return {
     blockchain: "APTOS",
     data: {
-      "@type": "APTOS_RARIBLE_V2", // Cambia esto si la doc indica otro valor
+      "@type": "APTOS_RARIBLE_V2", // Change this if the documentation indicates another value
     },
     make: {
       assetType: {
         blockchain: "APTOS",
-        "@type": "CURRENCY_NATIVE", // O ERC721 si es NFT
-        // Si es NFT, agrega contract y tokenId aquí
+        "@type": "CURRENCY_NATIVE", // Or ERC721 if it's an NFT
+        // If it's an NFT, add contract and tokenId here
       },
       value: quantity,
     },
@@ -75,7 +75,7 @@ async function createListingOrder(
       },
       value: price,
     },
-    // Agrega más campos si la doc lo requiere
+    // Add more fields if the documentation requires it
   };
 }
 

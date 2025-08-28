@@ -63,22 +63,22 @@ module ufc_strike::moments_registry {
         *table::borrow(&registry.table, collection_id)
     }
 
-    /// Verifica que signer sea admin (address que publicó el módulo)
+    /// Verifies that signer is admin (address that published the module)
     fun assert_admin(admin: &signer) {
         assert!(signer::address_of(admin) == @ufc_strike, ENOT_CREATOR);
     }
 
-    /// Obtiene el nombre de un momento
+    /// Gets the name of a moment
     public fun get_moment_name(metadata: MomentMetadata): String {
         metadata.name
     }
 
-    /// Obtiene la descripción de un momento
+    /// Gets the description of a moment
     public fun get_moment_description(metadata: MomentMetadata): String {
         metadata.description
     }
 
-    /// Obtiene la URI de un momento
+    /// Gets the URI of a moment
     public fun get_moment_uri(metadata: MomentMetadata): String {
         metadata.uri
     }

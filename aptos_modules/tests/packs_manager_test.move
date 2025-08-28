@@ -59,7 +59,7 @@ module ufc_strike::packs_manager_test {
         );
     }
 
-    /// Crea un drop pool con la configuración dada
+    /// Creates a drop pool with the given configuration
     fun create_drop_pool(
         creator: &signer,
         collection_ids: vector<u64>,
@@ -74,7 +74,7 @@ module ufc_strike::packs_manager_test {
         );
     }
 
-    /// Crea un drop pool estándar con 3 momentos
+    /// Creates a standard drop pool with 3 moments
     fun create_standard_drop_pool(creator: &signer) {
         let listing_ids = vector::empty<u64>();
         let weights = vector::empty<u64>();
